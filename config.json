@@ -1,0 +1,19 @@
+{
+  "config": {
+    "bugzilla_search_url": "https://{domain}/rest/bug?",
+    "bugzilla_put_url": "https://{domain}/rest/bug/{id}",
+    "bugzilla_link_url": "https://{domain}/show_bug.cgi?id={id}",
+    "bugzilla_user_url": "https://{domain}/rest/user?match={value}",
+    "bugzilla_domain": "bugzilla.mozilla.org",
+    "bugzilla_test_domain": "bugzilla-dev.allizom.org",
+    "use_test_domain": false,
+    "categories": {
+      "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng" ],
+      "Media": [ "opus", "libvpx", "libyuv", "dav1d" ],
+      "Graphics": [ "webgpu", "wgpu" ],
+      "Layout": [ "function2", "harfbuzz" ],
+      "Javascript": [ "irregexp" ],
+      "Misc": []
+    }
+  }
+}
