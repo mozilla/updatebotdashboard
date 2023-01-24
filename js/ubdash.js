@@ -97,7 +97,7 @@ function parseBugSummary(bugid, summary, assignee) {
     'date': new Date(results[3]),
     'lib': results[1],
     'id': bugid.toString(),
-    'assignee': assignee
+    'assignee': trimAddress(assignee)
     };
 }
 

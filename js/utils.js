@@ -69,16 +69,7 @@ function trimAddress(account) {
     account = '';
   }
 
-  for (const [key, value] of Object.entries(NeedInfoConfig.developers)) {
-    if (value == account) {
-      account = key;
-      break;
-    }
-  }
-
   account = account.replace('nobody@mozilla.org', 'nobody');
-
-  // Todo: get the alias from bugzilla
 
   // aryx.bugmail@gmx-topmail.de
   account = account.replace('aryx.bugmail@gmx-topmail.de', 'Aryx');

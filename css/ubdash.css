@@ -197,7 +197,7 @@ a:hover {
 
 .sublist-items {
   display: grid;
-  grid-template-columns: 20% auto auto auto auto;
+  grid-template-columns: 20% 20% 20% 20% 20%;
   width: 100%;
 }
 
