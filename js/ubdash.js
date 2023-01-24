@@ -106,7 +106,7 @@ function prepEntryHeader(category, type) {
     "<div class='listhdr-date'>Date</div>" + 
     "<div class='listhdr-library'>Library</div>" + 
     "<div class='listhdr-bugid'>Bug</div>" + 
-    "<div class='listhdr-status'>Status</div>" +
+    "<div class='listhdr-status'>Changeset</div>" +
     "<div class='listhdr-assignee'>Owner</div>";
 
   let id = "list-" + type + category;
@@ -213,7 +213,7 @@ function displayListFor(type)
     // sort by date
     value.list.sort(sortDateAsc);
     value.list.forEach(function (bug) {
-      prepEntry(value.sublistId, bug.lib, bug.date, bug.id, type, bug.assignee);
+      prepEntry(value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee);
       let el = document.getElementById(value.listId);
       el.style.visibility = 'visible';
     });
