@@ -22,8 +22,9 @@ function loadConfig() {
 }
 
 function prepPage() {
-  $("#report").empty();
-  //checkConfig();
+  $("#report-open").empty();
+  $("#report-closed").empty();
+  checkConfig();
 }
 
 var ConfigData = {};
@@ -32,6 +33,7 @@ function loadPage(configData)
 {
   ConfigData = configData.config;
   updateDomains();
+  loadSettingsInternal();
 
   $("#errors").empty();
 
@@ -84,7 +86,6 @@ var RegExpSummaryPattern = new RegExp('Update (.*) to new version (.*) from (.*)
 function parseBugSummary(bugid, summary, assignee) {
   // 1807473
   // Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
-
   let results = RegExpSummaryPattern.exec(summary);
   if (results == null) {
     console.log('Error parsing bug summary:');
@@ -220,13 +221,20 @@ function displayListFor(type)
   }
 }
 
+function refreshList(e) {
+  if (e) {
+    e.preventDefault();
+  }
+  loadConfig();
+}
+
 function settingsUpdated() {
   checkConfig();
   refreshList(null);
 }
 
 function checkConfig() {
-  if (NeedInfoConfig.api_key.length == 0) {
+  if (!ConfigData.api_key || ConfigData.api_key.length == 0) {
     document.getElementById('alert-icon').style.visibility = 'visible';
   } else {
     document.getElementById('alert-icon').style.visibility = 'hidden';

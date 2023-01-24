@@ -16,18 +16,6 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
 }
 
-function getTeam() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('team');
-}
-
-function getUserId() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('userid');
-}
-
 function getUserQuery() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -107,7 +95,7 @@ function clearStorage(keyname) {
 }
 
 function saveDefaultSortSettings(type, currentOrder) {
-  if (NeedInfoConfig.saveoptions) {
+  if (ConfigData.saveoptions) {
     localStorage.setItem("sort", type); // string
     localStorage.setItem("sortorder", currentOrder); // boolean
   }
@@ -120,24 +108,24 @@ function getDefaultSortSettings() {
 function loadSettingsInternal() {
   let api_key = getFromStorage("api-key");
 
-  NeedInfoConfig.api_key = (api_key == null) ? "" : api_key;
-  NeedInfoConfig.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
-  NeedInfoConfig.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
-  NeedInfoConfig.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
+  ConfigData.api_key = (api_key == null) ? "" : api_key;
+  ConfigData.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
+  ConfigData.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
+  ConfigData.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
 
-  console.log('storage key:', NeedInfoConfig.api_key);
-  console.log('ignore:', NeedInfoConfig.ignoremyni);
-  console.log('persist:', NeedInfoConfig.saveoptions);
-  console.log('targets:', NeedInfoConfig.targetnew);
+  console.log('storage key:', ConfigData.api_key);
+  console.log('ignore:', ConfigData.ignoremyni);
+  console.log('persist:', ConfigData.saveoptions);
+  console.log('targets:', ConfigData.targetnew);
 }
 
 function openSettings() {
-  if (NeedInfoConfig.api_key.length) {
-    document.getElementById("api-key").value = NeedInfoConfig.api_key;
+  if (ConfigData.api_key && ConfigData.api_key.length) {
+    document.getElementById("api-key").value = ConfigData.api_key;
   }
-  document.getElementById("option-ignoremyni").checked = NeedInfoConfig.ignoremyni;
-  document.getElementById("option-save").checked = NeedInfoConfig.saveoptions;
-  document.getElementById("option-targets").checked = NeedInfoConfig.targetnew;
+  document.getElementById("option-ignoremyni").checked = ConfigData.ignoremyni;
+  document.getElementById("option-save").checked = ConfigData.saveoptions;
+  document.getElementById("option-targets").checked = ConfigData.targetnew;
 
   document.getElementById("popupForm").style.display = "block";
 }
