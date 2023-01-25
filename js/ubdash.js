@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /*
-  - Settings support and api keys
-
+  Todo:
+   - 
 */
  
 $(document).ready(function () {
@@ -52,7 +52,8 @@ function loadPage(configData)
   retrieveInfoFor(url + query, 'open');
 
   // Fixed bugs filed by update bot. Note this
-  // ignores other resolved types like duplicates and invalids.
+  // ignores other resolved types like duplicates
+  // and invalids.
   query = "resolution=FIXED&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to";
   retrieveInfoFor(url + query, 'closed');
 }
@@ -133,8 +134,8 @@ function parseBugSummary(bugid, summary, assignee) {
     return data;
   }
 
-  console.log('Error parsing bug', bugid, 'summary:');
-  console.log(summary);
+  errorMsg('Error parsing bug', bugid, 'summary:');
+  errorMsg(summary);
   return null;
 }
 
