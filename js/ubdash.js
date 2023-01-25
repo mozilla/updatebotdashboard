@@ -87,31 +87,55 @@ function retrieveInfoFor(url, userQuery) {
   });
 }
 
+// Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
 var RegExpSummaryPattern1 = new RegExp('Update (.*) to new version (.*) from (.*)');
+
+// Update dav1d to new version ddbbfde for Firefox 91
 var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*');
 
+// Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
+var RegExpSummaryPattern3 = new RegExp('Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)');
+
 function parseBugSummary(bugid, summary, assignee) {
-  // Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
-  // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
-  // Update dav1d to new version ddbbfde for Firefox 91
-  let results = RegExpSummaryPattern1.exec(summary);
-  if (results == null) {
-    results = RegExpSummaryPattern2.exec(summary);
-  }
-
-  if (results == null) {
-    console.log('Error parsing bug', bugid, 'summary:');
-    console.log(summary);
-    return null;
-  }
-
-  return {
-    'rev': results[2],
-    'date': new Date(results[3]),
-    'lib': results[1],
+  let data = {
+    'rev': 'unknown',
+    'date': new Date(),
+    'lib': 'unknown',
     'id': bugid.toString(),
     'assignee': trimAddress(assignee)
   };
+
+  // bleh
+  summary = summary.replace('(', '');
+  summary = summary.replace(')', '');
+
+  let results = RegExpSummaryPattern1.exec(summary);
+  if (results != null) {
+    data.lib = results[1];
+    data.rev = results[2];
+    data.date = new Date(results[3]);
+    return data;
+  }
+
+  results = RegExpSummaryPattern2.exec(summary);
+  if (results != null) {
+    data.lib = results[1];
+    data.rev = results[2];
+    data.date = new Date(results[3]);
+    return data;
+  }
+
+  results = RegExpSummaryPattern3.exec(summary);
+  if (results != null) {
+    data.lib = results[1];
+    data.rev = results[2];
+    data.date = new Date(results[3]);
+    return data;
+  }
+
+  console.log('Error parsing bug', bugid, 'summary:');
+  console.log(summary);
+  return null;
 }
 
 function prepEntryHeader(category, type) {

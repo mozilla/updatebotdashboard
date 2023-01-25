@@ -10,7 +10,7 @@
     "categories": {
       "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng" ],
       "Media": [ "opus", "libvpx", "libyuv", "dav1d" ],
-      "Graphics": [ "webgpu", "wgpu" ],
+      "Graphics": [ "webgpu", "wgpu", "angle" ],
       "Layout": [ "function2", "harfbuzz" ],
       "Javascript": [ "irregexp" ],
       "Misc": []
