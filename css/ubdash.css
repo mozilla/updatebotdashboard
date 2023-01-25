@@ -271,7 +271,7 @@ a:hover {
 .footer {
   padding-left: 2vmin;
   padding-right: 2vmin;
-  border: 1px solid gray;
+  border: 0px solid gray;
   font-family: Moz;
   color: #a0a0a0;
   display: inline-block;
