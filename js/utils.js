@@ -109,12 +109,10 @@ function loadSettingsInternal() {
   let api_key = getFromStorage("api-key");
 
   ConfigData.api_key = (api_key == null) ? "" : api_key;
-  ConfigData.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
   ConfigData.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
   ConfigData.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
 
   console.log('storage key:', ConfigData.api_key);
-  console.log('ignore:', ConfigData.ignoremyni);
   console.log('persist:', ConfigData.saveoptions);
   console.log('targets:', ConfigData.targetnew);
 }
@@ -123,7 +121,6 @@ function openSettings() {
   if (ConfigData.api_key && ConfigData.api_key.length) {
     document.getElementById("api-key").value = ConfigData.api_key;
   }
-  document.getElementById("option-ignoremyni").checked = ConfigData.ignoremyni;
   document.getElementById("option-save").checked = ConfigData.saveoptions;
   document.getElementById("option-targets").checked = ConfigData.targetnew;
 
@@ -158,9 +155,6 @@ function saveSettings(e) {
 
   clearStorage("api-key");
   storage.setItem("api-key", values.key);
-
-  clearStorage("ignoremyni");
-  storage.setItem("ignoremyni", values.ignoremyni == 'on' ? true : false);
 
   clearStorage("save");
   storage.setItem("save", values.save == 'on' ? true : false);

@@ -22,7 +22,7 @@ body {
   z-index: -1;
   margin: 0px;
   height: 8vh;
-  border-right: 100vw solid #FF9500;
+  border-right: 100vw solid #0087ff;
 }
 
 .header div {
@@ -164,7 +164,7 @@ a:hover {
   padding-left: 100px;
   padding-right: 100px;
   border: 0px solid blue;
-  margin-top: 25px;
+  margin-top: 40px;
 }
 
 .table-container {
@@ -265,12 +265,9 @@ a:hover {
 }
 
 .footer {
-  padding-top: 20px;
   padding-left: 2vmin;
   padding-right: 2vmin;
-  float: right;
-  width: 100%;
-  border: 0px solid gray;
+  border: 1px solid gray;
   font-family: Moz;
   color: #a0a0a0;
   display: inline-block;
@@ -355,136 +352,5 @@ a:hover {
   background-size: 50%;
   background-repeat: no-repeat;
   color: gray;
-}
-
-/* prompts for details */
-#prompt-confirm {
-  border: 2px solid gray;
-}
-
-.prompt-confirm-info-grid {
-  display: grid;
-  gap: 0px;
-  border: 0px solid gray;
-  font-family: Moz;
-  align-items: center;
-}
-
-.prompt-text {
-  font-size: 2vmin;
-  align-self: center;
-  justify-self: center;
-}
-
-.prompt-details {
-  font-size: 2vmin;
-  font-family: Moz;
-  display: inline-block;
-  float: left;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.prompt-emphasis-text {
-  font-size: 5vmin;
-  align-self: center;
-  justify-self: center;
-  color: #cc0000;
-}
-
-.prompt-row1 {
-  grid-row: 1;
-}
-
-.prompt-row2 {
-  grid-row: 2;
-}
-
-.prompt-row3 {
-  grid-row: 3;
-}
-
-.prompt-buttons-form {
-  margin-top: 10px;
-  border: 0px solid green;
-}
-
-.prompt-buttons-form  #btn-confirm, #btn-cancel {
-  padding: 12px 20px;
-  border: none;
-  background-color: #8ebf42;
-  color: #fff;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-#btn-cancel {
-  background-color: #cc0000;
-}
-
-.prompt-comment-textarea {
-  width: 100%;
-  border: none;
-  background: #eee;
-  resize: both;
-}
-
-.prompt-comment-textarea:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-.text-area-container {
-  border: 0px solid red;
-}
-
-.prompt-text-input {
-  font-size: 1.5vmin;
-  font-family: Moz;
-  display: inline-block;
-  float: left;
-  width: 100%;
-  margin-bottom: 10px;
-  border: 0px solid blue;
-}
-
-#redirct-label {
-  width: auto;
-}
-
-#prompt-redirect-to-confirm-to {
-  font-size: 1.5vmin;
-  width: 100%;
-  background: #eee;
-  border: 0px solid red;
-  height: auto;
-}
-
-#prompt-redirect-to-confirm-to:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-#autofill-user-search {
-  font-size: 1.5vmin;
-  width: 100%;
-  background: #eee;
-  border: 0px solid red;
-  height: auto;
-}
-
-#autofill-user-search:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-#prompt-clear-confirm-comment {
-}
-
-#prompt-redirect-confirm-comment {
-}
-
-#prompt-redirect-to-confirm-comment {
 }
 

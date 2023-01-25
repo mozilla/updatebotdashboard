@@ -40,16 +40,21 @@ function loadPage(configData)
   prepPage();
   prepData();
 
-  let url = "https://bugzilla.mozilla.org/rest/bug?";
+  let url = ConfigData.bugzilla_search_url;
 
-  // open bugs - 
+  if (ConfigData.api_key.length) {
+    url += "api_key=" + ConfigData.api_key + "&";
+  }
+
+  // Open bugs filed by update bot - 
   let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to";
+
   retrieveInfoFor(url + query, 'open');
 
-  // fixed
+  // Fixed bugs filed by update bot. Note this
+  // ignores other resolved types like duplicates and invalids.
   query = "resolution=FIXED&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to";
   retrieveInfoFor(url + query, 'closed');
-
 }
 
 var LastErrorText = "";
@@ -82,13 +87,20 @@ function retrieveInfoFor(url, userQuery) {
   });
 }
 
-var RegExpSummaryPattern = new RegExp('Update (.*) to new version (.*) from (.*)');
+var RegExpSummaryPattern1 = new RegExp('Update (.*) to new version (.*) from (.*)');
+var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*');
+
 function parseBugSummary(bugid, summary, assignee) {
-  // 1807473
   // Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
-  let results = RegExpSummaryPattern.exec(summary);
+  // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
+  // Update dav1d to new version ddbbfde for Firefox 91
+  let results = RegExpSummaryPattern1.exec(summary);
   if (results == null) {
-    console.log('Error parsing bug summary:');
+    results = RegExpSummaryPattern2.exec(summary);
+  }
+
+  if (results == null) {
+    console.log('Error parsing bug', bugid, 'summary:');
     console.log(summary);
     return null;
   }
@@ -99,7 +111,7 @@ function parseBugSummary(bugid, summary, assignee) {
     'lib': results[1],
     'id': bugid.toString(),
     'assignee': trimAddress(assignee)
-    };
+  };
 }
 
 function prepEntryHeader(category, type) {
@@ -127,9 +139,7 @@ function prepEntryHeader(category, type) {
 function prepEntry(elId, lib, dt, bugid, status, assignee) {
   const options = { dateStyle: 'medium' };
   let dateStr = dt.toLocaleDateString(undefined, options);
-
-  //let tabTarget = ConfigData.targetnew ? "nidetails" : "_blank";
-  let tabTarget = '_blank';
+  let tabTarget = ConfigData.targetnew ? "nidetails" : "_blank";
   let bugUrl = ConfigData.bugzilla_link_url.replace('{id}', bugid);
   let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + bugid + "</a>";
 
