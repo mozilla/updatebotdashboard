@@ -177,6 +177,10 @@ a:hover {
   border: 0px solid red;
 }
 
+#report-closed {
+  opacity: 60%;
+}
+
 .list-container {
   visibility: collapse;
 }
