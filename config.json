@@ -11,8 +11,10 @@
       "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng" ],
       "Media": [ "opus", "libvpx", "libyuv", "dav1d" ],
       "Graphics": [ "webgpu", "wgpu", "angle" ],
-      "Layout": [ "function2", "harfbuzz" ],
+      "Layout": [ "harfbuzz" ],
+      "MFBT": [ "function2" ],
       "Javascript": [ "irregexp" ],
+      "WebRTC": [ "libepoxy", "libsrtp", "libdrm", "libgbm" ],
       "Misc": []
     }
   }
