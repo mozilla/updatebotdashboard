@@ -29,6 +29,9 @@ function prepPage() {
 
 var ConfigData = {};
 
+// https://bugzilla.mozilla.org/buglist.cgi?f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&query_format=advanced
+// https://bugzilla.mozilla.org/buglist.cgi?query_format=advanced&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&f1=reporter&resolution=FIXED&resolution=WONTFIX&resolution=DUPLICATE&o1=equals
+
 function loadPage(configData)
 {
   ConfigData = configData.config;
