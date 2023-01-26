@@ -16,12 +16,6 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
 }
 
-function getUserQuery() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('userquery');
-}
-
 function updateDomains() {
   // If requested via the json config file, point all queries at
   // a bugzilla test instance. 
