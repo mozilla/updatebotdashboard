@@ -50,14 +50,14 @@ function loadPage(configData)
   }
 
   // Open bugs filed by update bot - 
-  let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to";
+  let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to,creation_time";
 
   retrieveInfoFor(url + query, 'open');
 
   // Fixed bugs filed by update bot. Note this
   // ignores other resolved types like duplicates
   // and invalids.
-  query = "resolution=FIXED&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to";
+  query = "resolution=FIXED&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to,creation_time";
   retrieveInfoFor(url + query, 'closed');
 }
 
@@ -100,10 +100,10 @@ var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*')
 // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
 var RegExpSummaryPattern3 = new RegExp('Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)');
 
-function parseBugSummary(bugid, summary, assignee) {
+function parseBugSummary(bugid, summary, assignee, creation_time) {
   let data = {
     'rev': 'unknown',
-    'date': new Date(),
+    'date': new Date(creation_time),
     'lib': 'unknown',
     'id': bugid.toString(),
     'assignee': trimAddress(assignee)
@@ -125,7 +125,6 @@ function parseBugSummary(bugid, summary, assignee) {
   if (results != null) {
     data.lib = results[1];
     data.rev = results[2];
-    data.date = new Date(results[3]);
     return data;
   }
 
@@ -215,7 +214,7 @@ function processListFor(type, data) {
   let list = getList(type);
   data.bugs.forEach(function (bug) {
     // date, lib, rev, id 
-    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to);
+    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time);
     if (res == null) {
       return;
     }
