@@ -105,10 +105,14 @@ function loadSettingsInternal() {
   ConfigData.api_key = (api_key == null) ? "" : api_key;
   ConfigData.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
   ConfigData.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
+  ConfigData.incdupes = getFromStorage("incdupes") == (null || 'false') ? false : true;
 
   console.log('storage key:', ConfigData.api_key);
+  console.log("general options:");
   console.log('persist:', ConfigData.saveoptions);
   console.log('targets:', ConfigData.targetnew);
+  console.log("display options:");
+  console.log('dupes:', ConfigData.incdupes);
 }
 
 function openSettings() {
@@ -117,6 +121,7 @@ function openSettings() {
   }
   document.getElementById("option-save").checked = ConfigData.saveoptions;
   document.getElementById("option-targets").checked = ConfigData.targetnew;
+  document.getElementById("option-incdupes").checked = ConfigData.incdupes;
 
   document.getElementById("popupForm").style.display = "block";
 }
@@ -155,6 +160,9 @@ function saveSettings(e) {
 
   clearStorage("target");
   storage.setItem("target", values.target == 'on' ? true : false);
+
+  clearStorage("incdupes");
+  storage.setItem("incdupes", values.incdupes == 'on' ? true : false);
 
   closeSettings();
   loadSettingsInternal();

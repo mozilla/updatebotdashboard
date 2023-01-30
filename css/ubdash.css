@@ -207,6 +207,12 @@ a:hover {
   width: 100%;
 }
 
+.sublist-items-closed {
+  display: grid;
+  grid-template-columns: 15% 10% 10% 35% 20% 10%;
+  width: 100%;
+}
+
 .listhdr-date  {
   grid-column: 1;
   margin-bottom: 10px;
@@ -225,7 +231,7 @@ a:hover {
   border-bottom: 1px solid lightgray;
 }
 
-.listhdr-status {
+.listhdr-change {
   grid-column: 4;
   margin-bottom: 10px;
   border-bottom: 1px solid lightgray;
@@ -233,6 +239,12 @@ a:hover {
 
 .listhdr-assignee {
   grid-column: 5;
+  margin-bottom: 10px;
+  border-bottom: 1px solid lightgray;
+}
+
+.listhdr-resolution {
+  grid-column: 6;
   margin-bottom: 10px;
   border-bottom: 1px solid lightgray;
 }
@@ -255,6 +267,10 @@ a:hover {
 
 .listitem-assignee {
   grid-column: 5;
+}
+
+.listitem-resolution {
+  grid-column: 6;
 }
 
 .errors-container {

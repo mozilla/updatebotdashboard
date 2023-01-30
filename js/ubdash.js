@@ -50,14 +50,18 @@ function loadPage(configData)
   }
 
   // Open bugs filed by update bot - 
-  let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to,creation_time";
+  let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to,creation_time,resolution";
 
   retrieveInfoFor(url + query, 'open');
 
   // Fixed bugs filed by update bot. Note this
   // ignores other resolved types like duplicates
   // and invalids.
-  query = "resolution=FIXED&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to,creation_time";
+  query = "resolution=FIXED&";
+  if (ConfigData.incdupes) {
+    query += "resolution=DUPLICATE&";
+  }
+    query += "&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to,creation_time,resolution";
   retrieveInfoFor(url + query, 'closed');
 }
 
@@ -100,12 +104,13 @@ var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*')
 // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
 var RegExpSummaryPattern3 = new RegExp('Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)');
 
-function parseBugSummary(bugid, summary, assignee, creation_time) {
+function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   let data = {
     'rev': 'unknown',
     'date': new Date(creation_time),
     'lib': 'unknown',
     'id': bugid.toString(),
+    'resolution': resolution,
     'assignee': trimAddress(assignee)
   };
 
@@ -146,8 +151,12 @@ function prepEntryHeader(category, type) {
     "<div class='listhdr-date'>Date</div>" + 
     "<div class='listhdr-library'>Library</div>" + 
     "<div class='listhdr-bugid'>Bug</div>" + 
-    "<div class='listhdr-status'>Changeset</div>" +
+    "<div class='listhdr-change'>Changeset</div>" +
     "<div class='listhdr-assignee'>Owner</div>";
+
+  if (type == 'closed' && ConfigData.incdupes) {
+    header += "<div class='listhdr-resolution'>Resolution</div>";
+  }
 
   let id = "list-" + type + category;
   let subid = "sublist-" + type + category;
@@ -155,15 +164,21 @@ function prepEntryHeader(category, type) {
   let body = 
   "<div class='list-container' id='" + id + "'>" +
   "<div class='sublist-title'>" + category + "</div>" +
-  "<div class='sublist-library'>" +
-  "<div class='sublist-items' id='" + subid + "'></div>" +
-  "</div></div>";
+  "<div class='sublist-library'>";
+
+  if (type == 'open' || !ConfigData.incdupes) {
+    body += "<div class='sublist-items' id='" + subid + "'></div>" +
+            "</div></div>";
+  } else {
+    body += "<div class='sublist-items-closed' id='" + subid + "'></div>" +
+            "</div></div>";
+  }
 
   $("#report-" + type).append(body);
   $("#" + subid).append(header);
 }
 
-function prepEntry(elId, lib, dt, bugid, status, assignee) {
+function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) {
   const options = { dateStyle: 'medium' };
   let dateStr = dt.toLocaleDateString(undefined, options);
   let tabTarget = ConfigData.targetnew ? "nidetails" : "_blank";
@@ -174,8 +189,12 @@ function prepEntry(elId, lib, dt, bugid, status, assignee) {
     "<div class='listitem-date'>" + dateStr + "</div>" + 
     "<div class='listitem-library'>" + lib + "</div>" + 
     "<div class='listitem-bugid'>" + bugLink + "</div>" + 
-    "<div class='listitem-status'>" + status + "</div>" +
+    "<div class='listitem-change'>" + changeset + "</div>" +
     "<div class='listitem-assignee'>" + assignee + "</div>";
+
+  if (type == 'closed' && ConfigData.incdupes) {
+    entry += "<div class='listitem-resolution'>" + resolution + "</div>";
+  }
 
   $('#' + elId).append(entry);
 }
@@ -214,7 +233,7 @@ function processListFor(type, data) {
   let list = getList(type);
   data.bugs.forEach(function (bug) {
     // date, lib, rev, id 
-    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time);
+    let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time, bug.resolution);
     if (res == null) {
       return;
     }
@@ -251,7 +270,7 @@ function displayListFor(type)
     // sort by date
     value.list.sort(sortDateAsc);
     value.list.forEach(function (bug) {
-      prepEntry(value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee);
+      prepEntry(type, value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee, bug.resolution);
       let el = document.getElementById(value.listId);
       el.style.visibility = 'visible';
     });
