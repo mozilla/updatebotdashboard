@@ -321,11 +321,6 @@ a:hover {
   font-family: Moz;
 }
 
-#team-select, #team-option {
-  padding: 5px;
-  font-family: Moz;
-}
-
 .command-button {
   padding: 5px;
   margin-left: 10px;
@@ -360,19 +355,3 @@ a:hover {
   margin-left: 65px;
   margin-top: -2px;
 }
-
-.status-text {
-  visibility: hidden;
-  margin-top: 2px;
-  padding: 3px 15px 3px 15px;
-  border-radius: 2px;
-  float: right;
-  font-size: 1.75vmin;
-  font-family: Moz;
-  border: 1px solid #eeeeee;
-  background-image: linear-gradient(to right, rgb(186 232 188), rgb(186 232 188));
-  background-size: 50%;
-  background-repeat: no-repeat;
-  color: gray;
-}
-

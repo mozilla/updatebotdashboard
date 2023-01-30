@@ -8,7 +8,11 @@
   Todo:
    - 
 */
- 
+
+var OpenBugList = [];
+var ClosedBugList = [];
+var ConfigData = {};
+
 $(document).ready(function () {
   loadConfig();
 });
@@ -27,13 +31,7 @@ function prepPage() {
   checkConfig();
 }
 
-var ConfigData = {};
-
-// https://bugzilla.mozilla.org/buglist.cgi?f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&query_format=advanced
-// https://bugzilla.mozilla.org/buglist.cgi?query_format=advanced&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&f1=reporter&resolution=FIXED&resolution=WONTFIX&resolution=DUPLICATE&o1=equals
-
-function loadPage(configData)
-{
+function loadPage(configData) {
   ConfigData = configData.config;
   updateDomains();
   loadSettingsInternal();
@@ -50,18 +48,20 @@ function loadPage(configData)
   }
 
   // Open bugs filed by update bot - 
-  let query = "f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&&include_fields=id,summary,assigned_to,creation_time,resolution";
+  let query = "resolution=---&f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other";
+  query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
 
   retrieveInfoFor(url + query, 'open');
 
-  // Fixed bugs filed by update bot. Note this
-  // ignores other resolved types like duplicates
-  // and invalids.
+  // 'Fixed' bugs filed by update bot.
   query = "resolution=FIXED&";
   if (ConfigData.incdupes) {
+    // Add duplicates if settings dictates displaying them.
     query += "resolution=DUPLICATE&";
   }
-    query += "&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals&&include_fields=id,summary,assigned_to,creation_time,resolution";
+
+  query += "&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals";
+  query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
   retrieveInfoFor(url + query, 'closed');
 }
 
@@ -199,9 +199,6 @@ function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) 
   $('#' + elId).append(entry);
 }
 
-var OpenBugList = [];
-var ClosedBugList = [];
-
 function prepData() {
   for (const [key, value] of Object.entries(ConfigData.categories)) {
     let category = key.toString();
@@ -232,12 +229,13 @@ function getList(type) {
 function processListFor(type, data) {
   let list = getList(type);
   data.bugs.forEach(function (bug) {
-    // date, lib, rev, id 
+    // Returns a js object containing all the bug's info we display.
     let res = parseBugSummary(bug.id, bug.summary, bug.assigned_to, bug.creation_time, bug.resolution);
     if (res == null) {
       return;
     }
 
+    // Group by the categories we have in the config.json file.
     let found = false;
     for (const [key, value] of Object.entries(ConfigData.categories)) {
       if (value.includes(res.lib)) {
@@ -261,8 +259,7 @@ function processListFor(type, data) {
   displayListFor(type);
 }
 
-function displayListFor(type)
-{
+function displayListFor(type) {
   let list = getList(type);
 
   // Categories
@@ -290,6 +287,7 @@ function settingsUpdated() {
 }
 
 function checkConfig() {
+  // Throw up a little red ! if we don't have a bugzilla api key configued.
   if (!ConfigData.api_key || ConfigData.api_key.length == 0) {
     document.getElementById('alert-icon').style.visibility = 'visible';
   } else {
