@@ -6,7 +6,7 @@
 
 /*
   Todo:
-   - 
+   - collapsable category sections in closed bugs list
 */
 
 var OpenBugList = [];
@@ -46,7 +46,7 @@ function loadPage(configData) {
   if (ConfigData.api_key.length) {
     url += "api_key=" + ConfigData.api_key + "&";
   }
-
+  // 
   // Open bugs filed by update bot - 
   let query = "resolution=---&f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other";
   query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
@@ -70,6 +70,7 @@ function errorMsg(text) {
   if (LastErrorText == text)
     return;
   $("#errors").append(text);
+  $("#errors").append(' | ');
   LastErrorText = text;
 }
 
@@ -103,6 +104,9 @@ var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*')
 
 // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
 var RegExpSummaryPattern3 = new RegExp('Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)');
+
+// Update dav1d to new version ddbbfde for Firefox 91
+var RegExpSummaryPattern4 = new RegExp('Update (.*) to new version (.*)');
 
 function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   let data = {
@@ -141,10 +145,40 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
     return data;
   }
 
-  errorMsg('Error parsing bug', bugid, 'summary:');
-  errorMsg(summary);
+  results = RegExpSummaryPattern4.exec(summary);
+  if (results != null) {
+    data.lib = results[1];
+    data.rev = results[2];
+    return data;
+  }
+
+  errorMsg('Error parsing bug ' + bugid + ' summary: ' + summary);
   return null;
 }
+
+/*
+  <div id='report-open' class='table-container'>
+    <div class="list-container" id="list-openImage" style="visibility: visible;">
+      <div class="sublist-title">Image</div>
+      <div class="sublist-library">
+        <div class="sublist-items" id="sublist-openImage">
+          <div class="listhdr-date">Date</div>
+          <div class="listhdr-library">Library</div>
+          <div class="listhdr-bugid">Bug</div>
+          <div class="listhdr-change">Changeset</div>
+          <div class="listhdr-assignee">Owner</div>
+          <div class="listitem-date">Dec 19, 2022</div>
+          <div class="listitem-library">libwebp</div>
+          <div class="listitem-bugid">
+          <a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1810078">1810078</a></div>
+          <div class="listitem-change">v1.3.0</div>
+          <div class="listitem-assignee">aosmond@moz</div>
+        </div>
+      </div>
+    </div>
+  </div>
+*/
+
 
 function prepEntryHeader(category, type) {
   let header = 
