@@ -42,9 +42,6 @@ function loadPage(configData) {
 
   let url = ConfigData.bugzilla_search_url;
 
-  if (ConfigData.api_key.length) {
-    url += "api_key=" + ConfigData.api_key + "&";
-  }
   //
   // Open bugs filed by update bot -
   let query = "resolution=---&f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other";
@@ -74,7 +71,11 @@ function errorMsg(text) {
 }
 
 function retrieveInfoFor(url, userQuery) {
-  fetch(url)
+  const fetchOptions = {};
+  if (ConfigData.api_key && ConfigData.api_key.length) {
+    fetchOptions.headers = { "X-Bugzilla-api-key": ConfigData.api_key };
+  }
+  fetch(url, fetchOptions)
     .then(r => r.json())
     .then(data => {
       if (data.error) {
