@@ -4,10 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/*
-  Todo:
-   - collapsable category sections in closed bugs list
-*/
+const COLLAPSED_COUNT = 3;
 
 let OpenBugList = [];
 let ClosedBugList = [];
@@ -206,14 +203,14 @@ function prepEntryHeader(category, type) {
   document.getElementById(subid).insertAdjacentHTML('beforeend', header);
 }
 
-function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) {
+function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution, isExtra = false) {
   const options = { dateStyle: 'medium' };
   let dateStr = dt.toLocaleDateString(undefined, options);
   let tabTarget = ConfigData.targetnew ? "nidetails" : "_blank";
   let bugUrl = ConfigData.bugzilla_link_url.replace('{id}', bugid);
   let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + bugid + "</a>";
 
-  let entry =
+  let cells =
     "<div class='listitem-date'>" + dateStr + "</div>" +
     "<div class='listitem-library'>" + lib + "</div>" +
     "<div class='listitem-bugid'>" + bugLink + "</div>" +
@@ -221,10 +218,45 @@ function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) 
     "<div class='listitem-assignee'>" + assignee + "</div>";
 
   if (type == 'closed' && ConfigData.incdupes) {
-    entry += "<div class='listitem-resolution'>" + resolution + "</div>";
+    cells += "<div class='listitem-resolution'>" + resolution + "</div>";
+  }
+
+  let entry;
+  if (isExtra) {
+    entry = "<div class='extra-row' style='display: none'>" + cells + "</div>";
+  } else {
+    entry = "<div class='listitem-row' style='display: contents'>" + cells + "</div>";
   }
 
   document.getElementById(elId).insertAdjacentHTML('beforeend', entry);
+}
+
+function insertExpandButton(sublistId) {
+  let html = "<div class='expand-row' style='grid-column: 1 / -1; text-align: center; padding: 5px;'>" +
+    "<button class='expand-collapse-btn' onclick=\"expandSection('" + sublistId + "')\">&#9660; Show more</button>" +
+    "</div>";
+  document.getElementById(sublistId).insertAdjacentHTML('beforeend', html);
+}
+
+function insertCollapseButton(sublistId) {
+  let html = "<div class='collapse-row' style='grid-column: 1 / -1; text-align: center; padding: 5px; display: none;'>" +
+    "<button class='expand-collapse-btn' onclick=\"collapseSection('" + sublistId + "')\">&#9650; Show less</button>" +
+    "</div>";
+  document.getElementById(sublistId).insertAdjacentHTML('beforeend', html);
+}
+
+function expandSection(sublistId) {
+  let sublist = document.getElementById(sublistId);
+  sublist.querySelectorAll('.extra-row').forEach(el => el.style.display = 'contents');
+  sublist.querySelector('.expand-row').style.display = 'none';
+  sublist.querySelector('.collapse-row').style.display = '';
+}
+
+function collapseSection(sublistId) {
+  let sublist = document.getElementById(sublistId);
+  sublist.querySelectorAll('.extra-row').forEach(el => el.style.display = 'none');
+  sublist.querySelector('.expand-row').style.display = '';
+  sublist.querySelector('.collapse-row').style.display = 'none';
 }
 
 function prepData() {
@@ -288,15 +320,29 @@ function processListFor(type, data) {
 function displayListFor(type) {
   let list = getList(type);
 
-  // Categories
   for (const [key, value] of Object.entries(list)) {
-    // sort by date
-    value.list.sort(sortDateAsc);
-    value.list.forEach(function (bug) {
-      prepEntry(type, value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee, bug.resolution);
-      let el = document.getElementById(value.listId);
-      el.style.visibility = 'visible';
-    });
+    value.list.sort(sortDateDesc);
+
+    if (type === 'closed' && value.list.length > COLLAPSED_COUNT) {
+      for (let i = 0; i < COLLAPSED_COUNT; i++) {
+        let bug = value.list[i];
+        prepEntry(type, value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee, bug.resolution, false);
+      }
+      insertExpandButton(value.sublistId);
+      for (let i = COLLAPSED_COUNT; i < value.list.length; i++) {
+        let bug = value.list[i];
+        prepEntry(type, value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee, bug.resolution, true);
+      }
+      insertCollapseButton(value.sublistId);
+    } else {
+      value.list.forEach(function (bug) {
+        prepEntry(type, value.sublistId, bug.lib, bug.date, bug.id, bug.rev, bug.assignee, bug.resolution, false);
+      });
+    }
+
+    if (value.list.length > 0) {
+      document.getElementById(value.listId).style.visibility = 'visible';
+    }
   }
 }
 
