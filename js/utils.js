@@ -8,7 +8,7 @@ function replaceUrlParam(url, paramName, paramValue) {
   if (paramValue == null) {
     paramValue = '';
   }
-  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+  const pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
   if (url.search(pattern) >= 0) {
     return url.replace(pattern, '$1' + paramValue + '$2');
   }
@@ -18,7 +18,7 @@ function replaceUrlParam(url, paramName, paramValue) {
 
 function updateDomains() {
   // If requested via the json config file, point all queries at
-  // a bugzilla test instance. 
+  // a bugzilla test instance.
   let domain = ConfigData.bugzilla_domain;
   if (ConfigData.use_test_domain) {
     domain = ConfigData.bugzilla_test_domain;
@@ -36,7 +36,7 @@ function updateDomains() {
 }
 
 // generate random integer in the given range
-function randomNumber(min, max) { 
+function randomNumber(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
 
@@ -103,9 +103,9 @@ function loadSettingsInternal() {
   let api_key = getFromStorage("api-key");
 
   ConfigData.api_key = (api_key == null) ? "" : api_key;
-  ConfigData.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
-  ConfigData.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
-  ConfigData.incdupes = getFromStorage("incdupes") == (null || 'false') ? false : true;
+  ConfigData.saveoptions = getFromStorage("save") === 'true';
+  ConfigData.targetnew = getFromStorage("target") === 'true';
+  ConfigData.incdupes = getFromStorage("incdupes") === 'true';
 
   console.log('storage key:', ConfigData.api_key);
   console.log("general options:");
@@ -133,36 +133,28 @@ function closeSettings() {
 function saveSettings(e) {
   e.preventDefault();
 
-  let x = $("form").serializeArray();
-  let values = {};
-  $.each(x, function (i, field) {
-    values[field.name] = field.value;
-  });
+  const key = document.getElementById("api-key").value;
+  const saveChecked = document.getElementById("option-save").checked;
+  const targetChecked = document.getElementById("option-targets").checked;
+  const incdupesChecked = document.getElementById("option-incdupes").checked;
 
   // 'remember my settings' checkbox
-  let usePersistent = JSON.stringify(values).includes("save");
+  let usePersistent = saveChecked;
   console.log('use persistent storage:', usePersistent);
-
-  // API key
-  let old_api_key = "";
-  let key = getFromStorage("api-key");
-  if (key != null) {
-    old_api_key = key;
-  }
 
   let storage = usePersistent ? localStorage : sessionStorage;
 
   clearStorage("api-key");
-  storage.setItem("api-key", values.key);
+  storage.setItem("api-key", key);
 
   clearStorage("save");
-  storage.setItem("save", values.save == 'on' ? true : false);
+  storage.setItem("save", saveChecked ? true : false);
 
   clearStorage("target");
-  storage.setItem("target", values.target == 'on' ? true : false);
+  storage.setItem("target", targetChecked ? true : false);
 
   clearStorage("incdupes");
-  storage.setItem("incdupes", values.incdupes == 'on' ? true : false);
+  storage.setItem("incdupes", incdupesChecked ? true : false);
 
   closeSettings();
   loadSettingsInternal();
@@ -177,19 +169,19 @@ function saveSettings(e) {
 // If the result is 0, no changes are done with the sort order of the two values.
 
 function sortDateAsc(a, b) {
-  return a.date < b.date;
+  return a.date - b.date;
 }
 
 function sortDateDesc(a, b) {
-  return a.date > b.date;
+  return b.date - a.date;
 }
 
 function sortBugIdAsc(a, b) {
-  return a.bugid < b.bugid;
+  return Number(a.id) - Number(b.id);
 }
 
 function sortBugIdDesc(a, b) {
-  return a.bugid > b.bugid;
+  return Number(b.id) - Number(a.id);
 }
 
 // severity - S1 - S4, enhancement, trivial, minor, normal, major, critical, blocker, N/A, --
@@ -210,11 +202,11 @@ var sVals = {
 };
 
 function sortSeverityAsc(a, b) {
-  return sVals[a.severity] >= sVals[b.severity];
+  return sVals[a.severity] - sVals[b.severity];
 }
 
 function sortSeverityDesc(a, b) {
-  return sVals[a.severity] < sVals[b.severity];
+  return sVals[b.severity] - sVals[a.severity];
 }
 
 var pVals = {
@@ -227,11 +219,11 @@ var pVals = {
 };
 
 function sortPriorityAsc(a, b) {
-  return pVals[a.priority] >= pVals[b.priority];
+  return pVals[a.priority] - pVals[b.priority];
 }
 
 function sortPriorityDesc(a, b) {
-  return pVals[a.priority] < pVals[b.priority];
+  return pVals[b.priority] - pVals[a.priority];
 }
 
 

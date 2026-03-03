@@ -9,25 +9,24 @@
    - collapsable category sections in closed bugs list
 */
 
-var OpenBugList = [];
-var ClosedBugList = [];
-var ConfigData = {};
+let OpenBugList = [];
+let ClosedBugList = [];
+let ConfigData = {};
 
-$(document).ready(function () {
-  loadConfig();
-});
+document.addEventListener('DOMContentLoaded', loadConfig);
 
 function loadConfig() {
-  $.getJSON("config.json", function (configData) {
-    loadPage(configData);
-  }).fail(function () {
-    console.log("getJSON call failed for some reason.")
-  });
+  fetch("config.json")
+    .then(r => r.json())
+    .then(configData => loadPage(configData))
+    .catch(function () {
+      console.log("fetch call failed for some reason.");
+    });
 }
 
 function prepPage() {
-  $("#report-open").empty();
-  $("#report-closed").empty();
+  document.getElementById("report-open").innerHTML = '';
+  document.getElementById("report-closed").innerHTML = '';
   checkConfig();
 }
 
@@ -36,7 +35,7 @@ function loadPage(configData) {
   updateDomains();
   loadSettingsInternal();
 
-  $("#errors").empty();
+  document.getElementById("errors").innerHTML = '';
 
   prepPage();
   prepData();
@@ -46,8 +45,8 @@ function loadPage(configData) {
   if (ConfigData.api_key.length) {
     url += "api_key=" + ConfigData.api_key + "&";
   }
-  // 
-  // Open bugs filed by update bot - 
+  //
+  // Open bugs filed by update bot -
   let query = "resolution=---&f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other";
   query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
 
@@ -65,48 +64,42 @@ function loadPage(configData) {
   retrieveInfoFor(url + query, 'closed');
 }
 
-var LastErrorText = "";
+let lastErrorText = "";
 function errorMsg(text) {
-  if (LastErrorText == text)
+  if (lastErrorText == text)
     return;
-  $("#errors").append(text);
-  $("#errors").append(' | ');
-  LastErrorText = text;
+  document.getElementById("errors").insertAdjacentHTML('beforeend', text);
+  document.getElementById("errors").insertAdjacentHTML('beforeend', ' | ');
+  lastErrorText = text;
 }
 
 function retrieveInfoFor(url, userQuery) {
-  $.ajax({
-    url: url,
-    success: function (data) {
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        errorMsg(data.message || 'Request failed');
+        return;
+      }
       processListFor(userQuery, data);
-    }
-  })
-  .error(function(jqXHR, textStatus, errorThrown) {
-    console.log("status:", textStatus);
-    console.log("error thrown:", errorThrown);
-    console.log("response text:", jqXHR.responseText);
-    try {
-      let info = JSON.parse(jqXHR.responseText);
-      let text = info.message ? info.message : errorThrown;
-      errorMsg(text);
-      return;
-    } catch(e) {
-    }
-    errorMsg(errorThrown);
-  });
+    })
+    .catch(function(error) {
+      console.log("error:", error);
+      errorMsg(error.message || error.toString());
+    });
 }
 
 // Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
-var RegExpSummaryPattern1 = new RegExp('Update (.*) to new version (.*) from (.*)');
+const RegExpSummaryPattern1 = /Update (.*) to new version (.*) from (.*)/;
 
 // Update dav1d to new version ddbbfde for Firefox 91
-var RegExpSummaryPattern2 = new RegExp('Update (.*) to new version (.*) for .*');
+const RegExpSummaryPattern2 = /Update (.*) to new version (.*) for .*/;
 
 // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
-var RegExpSummaryPattern3 = new RegExp('Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)');
+const RegExpSummaryPattern3 = /Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)/;
 
 // Update dav1d to new version ddbbfde for Firefox 91
-var RegExpSummaryPattern4 = new RegExp('Update (.*) to new version (.*)');
+const RegExpSummaryPattern4 = /Update (.*) to new version (.*)/;
 
 function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   let data = {
@@ -123,7 +116,7 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   summary = summary.replace(')', '');
 
   let results = RegExpSummaryPattern1.exec(summary);
-  if (results != null) {
+  if (results !== null) {
     data.lib = results[1];
     data.rev = results[2];
     data.date = new Date(results[3]);
@@ -131,14 +124,14 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   }
 
   results = RegExpSummaryPattern2.exec(summary);
-  if (results != null) {
+  if (results !== null) {
     data.lib = results[1];
     data.rev = results[2];
     return data;
   }
 
   results = RegExpSummaryPattern3.exec(summary);
-  if (results != null) {
+  if (results !== null) {
     data.lib = results[1];
     data.rev = results[2];
     data.date = new Date(results[3]);
@@ -146,7 +139,7 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   }
 
   results = RegExpSummaryPattern4.exec(summary);
-  if (results != null) {
+  if (results !== null) {
     data.lib = results[1];
     data.rev = results[2];
     return data;
@@ -181,10 +174,10 @@ function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
 
 
 function prepEntryHeader(category, type) {
-  let header = 
-    "<div class='listhdr-date'>Date</div>" + 
-    "<div class='listhdr-library'>Library</div>" + 
-    "<div class='listhdr-bugid'>Bug</div>" + 
+  let header =
+    "<div class='listhdr-date'>Date</div>" +
+    "<div class='listhdr-library'>Library</div>" +
+    "<div class='listhdr-bugid'>Bug</div>" +
     "<div class='listhdr-change'>Changeset</div>" +
     "<div class='listhdr-assignee'>Owner</div>";
 
@@ -195,7 +188,7 @@ function prepEntryHeader(category, type) {
   let id = "list-" + type + category;
   let subid = "sublist-" + type + category;
 
-  let body = 
+  let body =
   "<div class='list-container' id='" + id + "'>" +
   "<div class='sublist-title'>" + category + "</div>" +
   "<div class='sublist-library'>";
@@ -208,8 +201,8 @@ function prepEntryHeader(category, type) {
             "</div></div>";
   }
 
-  $("#report-" + type).append(body);
-  $("#" + subid).append(header);
+  document.getElementById("report-" + type).insertAdjacentHTML('beforeend', body);
+  document.getElementById(subid).insertAdjacentHTML('beforeend', header);
 }
 
 function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) {
@@ -219,10 +212,10 @@ function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) 
   let bugUrl = ConfigData.bugzilla_link_url.replace('{id}', bugid);
   let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + bugid + "</a>";
 
-  let entry = 
-    "<div class='listitem-date'>" + dateStr + "</div>" + 
-    "<div class='listitem-library'>" + lib + "</div>" + 
-    "<div class='listitem-bugid'>" + bugLink + "</div>" + 
+  let entry =
+    "<div class='listitem-date'>" + dateStr + "</div>" +
+    "<div class='listitem-library'>" + lib + "</div>" +
+    "<div class='listitem-bugid'>" + bugLink + "</div>" +
     "<div class='listitem-change'>" + changeset + "</div>" +
     "<div class='listitem-assignee'>" + assignee + "</div>";
 
@@ -230,7 +223,7 @@ function prepEntry(type, elId, lib, dt, bugid, changeset, assignee, resolution) 
     entry += "<div class='listitem-resolution'>" + resolution + "</div>";
   }
 
-  $('#' + elId).append(entry);
+  document.getElementById(elId).insertAdjacentHTML('beforeend', entry);
 }
 
 function prepData() {
@@ -253,10 +246,8 @@ function getList(type) {
   switch(type) {
     case 'open':
       return OpenBugList;
-    break;
     case 'closed':
       return ClosedBugList;
-    break;
   }
 }
 
@@ -280,7 +271,7 @@ function processListFor(type, data) {
     }
     if (!found) {
       list['Misc'].list.push(res);
-    }    
+    }
   });
 
   // Prep our html tables based on the incoming data

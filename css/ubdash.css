@@ -4,9 +4,9 @@
 }
 
 body {
-  margin-top: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .header {
@@ -16,13 +16,13 @@ body {
   text-align: center;
   font-size:  4.5vmin;
   font-family: Moz;
-  border:0px solid black;
+  border: 0;
 }
 
 .header-bg {
   position: absolute;
   z-index: -1;
-  margin: 0px;
+  margin: 0;
   height: 8vh;
   border-right: 100vw solid #0087ff;
 }
@@ -66,7 +66,7 @@ a {
 }
 
 a:hover {
-  color: highlight;
+  color: #0060df;
 }
 
 /* Settings pop-up */
@@ -129,8 +129,8 @@ a:hover {
 
 .settings-container {
   display: grid;
-  gap: 0px;
-  grid-row-gap: 0px;
+  gap: 0;
+  grid-row-gap: 0;
   width: 100%;
   margin-top: 15px;
   margin-bottom: 35px;
@@ -164,7 +164,7 @@ a:hover {
   font-family: Moz;
   padding-left: 100px;
   padding-right: 100px;
-  border: 0px solid blue;
+  border: 0;
   margin-top: 40px;
 }
 
@@ -172,18 +172,18 @@ a:hover {
   padding-left: 100px;
   padding-right: 100px;
   width: 100%;
-  gap: 0px;
+  gap: 0;
   font-size: 1.5vmin;
   font-family: Moz;
-  border: 0px solid red;
+  border: 0;
 }
 
 #report-closed {
-  opacity: 60%;
+  opacity: 0.6;
 }
 
 .list-container {
-  visibility: collapse;
+  visibility: hidden;
 }
 
 .sublist-title {
@@ -260,10 +260,6 @@ a:hover {
   grid-column: 3;
 }
 
-.listitem-status {
-  grid-column: 4;
-}
-
 .listitem-assignee {
   grid-column: 5;
 }
@@ -278,7 +274,7 @@ a:hover {
   padding-right: 2vmin;
   float: left;
   width: 100%;
-  border: 0px solid gray;
+  border: 0;
   font-family: Moz;
   color: #cc0000;
   display: inline-block;
@@ -288,7 +284,7 @@ a:hover {
 .footer {
   padding-left: 2vmin;
   padding-right: 2vmin;
-  border: 0px solid gray;
+  border: 0;
   font-family: Moz;
   color: #a0a0a0;
   display: inline-block;
@@ -306,7 +302,7 @@ a:hover {
   padding-left: 2vmin;
   padding-right: 2vmin;
   width: 100%;
-  border: 0px solid green;
+  border: 0;
 }
 
 .command-button:disabled {
@@ -332,7 +328,7 @@ a:hover {
   margin-left: 10px;
   font-family: Moz;
   float: right;
-  visibility: collapse;
+  visibility: hidden;
 }
 
 .button-separator {
@@ -342,9 +338,9 @@ a:hover {
 }
 
 .settings-button-container {
-  padding: 0px;
-  margin: 0px;
-  border: 0px solid blue;
+  padding: 0;
+  margin: 0;
+  border: 0;
   float: right;
 }
 
@@ -353,4 +349,6 @@ a:hover {
   visibility: hidden;
   margin-left: 65px;
   margin-top: -2px;
+  width: 10px;
+  height: 10px;
 }
