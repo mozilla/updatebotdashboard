@@ -49,49 +49,60 @@
     <a href="https://github.com/mozilla/updatebotdashboard" target="_blank">Dashboard source</a> and <a href="https://github.com/mozilla-services/updatebot" target="_blank">Updatebot Source</a> is available on Github. Searchfox Updatebot configuration file <a href="https://searchfox.org/mozilla-central/search?q=moz.yaml" target="_blank">search query</a>.
   </span>
 
-  <!-- Setting div start -->
-  <div class="settingsPopup">
-    <div class="formPopup" id="popupForm">
-      <form class="formContainer" onsubmit="saveSettings(event);">
-        <h2>Settings</h2>
-        <label for="api-key">
-          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15" alt=""></a>
-        </label>
-        <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
-
+  <dialog id="settings-dialog">
+    <form method="dialog">
+      <div class="dialog-header">
+        <h2 class="dialog-title">Settings</h2>
+        <button type="submit" value="cancel" class="dialog-close-btn btn-cancel" aria-label="Close">&#x2715;</button>
+      </div>
+      <div class="dialog-body">
         <div class="settings-container">
+
+          <div class="settings-header">
+            <div class="settings-label-title">Bugzilla Access</div>
+          </div>
+          <div class="settings-full-row">
+            <label for="api-key">API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer">More info</a></label>
+            <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+          </div>
+
           <div class="settings-header">
             <div class="settings-label-title">General Options</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-targets" name="target" />
+            <label for="option-targets">
+              Target same tab for bug links.
+              <small>All bug links will open in the same tab instead of opening new tabs.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Target same tab for bug links</div>
-          </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-save" name="save" />
+            <label for="option-save">
+              Persist settings including my Bugzilla API key in local storage.
+              <small>When off, settings are only kept for the current browser session.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Always remember my settings</div>
-          </div>
+
           <div class="settings-header">
             <div class="settings-label-title">List Options</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-incdupes" name="incdupes" />
+            <label for="option-incdupes">
+              Display Duplicates.
+              <small>Show duplicate bugs in the list.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Display Duplicates</div>
-          </div>
-        </div>
 
-        <button type="submit" class="btn" id="applySettingsButton">Apply</button>
-        <button type="button" class="btn cancel" onclick="closeSettings()">Cancel</button>
-      </form>
-    </div>
-  </div>
-  <!-- Setting div end -->
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-cancel" value="cancel">Cancel</button>
+        <button class="btn-confirm" value="confirm">Apply</button>
+      </div>
+    </form>
+  </dialog>
 
 </body>
 </html>

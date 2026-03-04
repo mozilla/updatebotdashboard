@@ -123,16 +123,14 @@ function openSettings() {
   document.getElementById("option-targets").checked = ConfigData.targetnew;
   document.getElementById("option-incdupes").checked = ConfigData.incdupes;
 
-  document.getElementById("popupForm").style.display = "block";
+  document.getElementById("settings-dialog").showModal();
 }
 
 function closeSettings() {
-  document.getElementById("popupForm").style.display = "none";
+  document.getElementById("settings-dialog").close();
 }
 
-function saveSettings(e) {
-  e.preventDefault();
-
+function saveSettings() {
   const key = document.getElementById("api-key").value;
   const saveChecked = document.getElementById("option-save").checked;
   const targetChecked = document.getElementById("option-targets").checked;
@@ -156,10 +154,17 @@ function saveSettings(e) {
   clearStorage("incdupes");
   storage.setItem("incdupes", incdupesChecked ? true : false);
 
-  closeSettings();
   loadSettingsInternal();
   settingsUpdated();
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("settings-dialog").addEventListener("close", function () {
+    if (this.returnValue === "confirm") {
+      saveSettings();
+    }
+  });
+});
 
 /* sorting utilities */
 
