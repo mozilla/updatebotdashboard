@@ -62,8 +62,7 @@ let lastErrorText = "";
 function errorMsg(text) {
   if (lastErrorText == text)
     return;
-  document.getElementById("errors").insertAdjacentHTML('beforeend', text);
-  document.getElementById("errors").insertAdjacentHTML('beforeend', ' | ');
+  document.getElementById("errors").insertAdjacentHTML('beforeend', text + '<br>');
   lastErrorText = text;
 }
 
