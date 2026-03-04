@@ -87,59 +87,40 @@ function retrieveInfoFor(url, userQuery) {
     });
 }
 
-// Update libjxl to new version 5853ad97044c3b9da46d10b611e66063b1297cc5 from 2022-12-22 12:47:29
-const RegExpSummaryPattern1 = /Update (.*) to new version (.*) from (.*)/;
-
-// Update dav1d to new version ddbbfde for Firefox 91
-const RegExpSummaryPattern2 = /Update (.*) to new version (.*) for .*/;
+// Handles all three "Update" variants:
+//   "Update libjxl to new version abc123 from 2022-12-22 12:47:29"
+//   "Update dav1d to new version ddbbfde for Firefox 91"
+//   "Update dav1d to new version ddbbfde"
+const RegExpUpdate = /^Update (?<lib>.+?) to new version (?<rev>\S+)(?:\s+from\s+(?<date>\S+\s+\S+))?/;
 
 // Examine angle for 2 new commits, culminating in 92b793976c27682baaac6ea07f56d079b837876c (2021-10-12 23:36:02 +0000)
-const RegExpSummaryPattern3 = /Examine (.*) for [0-9]+ new commits, culminating in ([a-z0-9]+) ([0-9-]+)/;
-
-// Update dav1d to new version ddbbfde for Firefox 91
-const RegExpSummaryPattern4 = /Update (.*) to new version (.*)/;
+const RegExpExamine = /^Examine (?<lib>.+?) for \d+ new commits?, culminating in (?<rev>[a-z0-9]+)\s+(?<date>\d{4}-\d{2}-\d{2})/;
 
 function parseBugSummary(bugid, summary, assignee, creation_time, resolution) {
   let data = {
-    'rev': 'unknown',
-    'date': new Date(creation_time),
-    'lib': 'unknown',
-    'id': bugid.toString(),
-    'resolution': resolution,
-    'assignee': trimAddress(assignee)
+    rev: 'unknown',
+    date: new Date(creation_time),
+    lib: 'unknown',
+    id: bugid.toString(),
+    resolution,
+    assignee: trimAddress(assignee)
   };
 
-  // bleh
-  summary = summary.replace('(', '');
-  summary = summary.replace(')', '');
+  summary = summary.replace(/[()]/g, '');
 
-  let results = RegExpSummaryPattern1.exec(summary);
-  if (results !== null) {
-    data.lib = results[1];
-    data.rev = results[2];
-    data.date = new Date(results[3]);
+  let m = RegExpUpdate.exec(summary);
+  if (m) {
+    data.lib = m.groups.lib;
+    data.rev = m.groups.rev;
+    if (m.groups.date) data.date = new Date(m.groups.date);
     return data;
   }
 
-  results = RegExpSummaryPattern2.exec(summary);
-  if (results !== null) {
-    data.lib = results[1];
-    data.rev = results[2];
-    return data;
-  }
-
-  results = RegExpSummaryPattern3.exec(summary);
-  if (results !== null) {
-    data.lib = results[1];
-    data.rev = results[2];
-    data.date = new Date(results[3]);
-    return data;
-  }
-
-  results = RegExpSummaryPattern4.exec(summary);
-  if (results !== null) {
-    data.lib = results[1];
-    data.rev = results[2];
+  m = RegExpExamine.exec(summary);
+  if (m) {
+    data.lib = m.groups.lib;
+    data.rev = m.groups.rev;
+    data.date = new Date(m.groups.date);
     return data;
   }
 

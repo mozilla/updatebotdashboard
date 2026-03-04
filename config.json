@@ -9,11 +9,13 @@
     "use_test_domain": false,
     "categories": {
       "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng" ],
-      "Media": [ "opus", "libvpx", "libyuv", "dav1d" ],
-      "Graphics": [ "webgpu", "wgpu", "angle" ],
+      "Media": [ "opus", "libvpx", "libyuv", "dav1d", "chromium-cdm" ],
+      "Graphics": [ "webgpu", "wgpu", "angle", "WebGPU CTS", "highway" ],
       "Layout": [ "harfbuzz" ],
       "MFBT": [ "function2" ],
+      "PDF.js": [ "PDF.js" ],
       "Javascript": [ "irregexp" ],
+      "Android": ["android nightly application-services version bump"],
       "WebRTC": [ "libepoxy", "libsrtp", "libdrm", "libgbm" ],
       "Misc": []
     }
