@@ -6,6 +6,23 @@
 
 const COLLAPSED_COUNT = 3;
 
+const CLASSIFICATIONS = [
+  "Client Software", "Developer Infrastructure",
+  "Components", "Server Software", "Other"
+];
+const INCLUDE_FIELDS = "id,summary,assigned_to,creation_time,resolution";
+const REPORTER = "update-bot@bmo.tld";
+
+function baseParams() {
+  const p = new URLSearchParams();
+  p.append("f1", "reporter");
+  p.append("o1", "equals");
+  p.append("v1", REPORTER);
+  for (const c of CLASSIFICATIONS) p.append("classification", c);
+  p.append("include_fields", INCLUDE_FIELDS);
+  return p;
+}
+
 let OpenBugList = [];
 let ClosedBugList = [];
 let ConfigData = {};
@@ -37,25 +54,22 @@ function loadPage(configData) {
   prepPage();
   prepData();
 
-  let url = ConfigData.bugzilla_search_url;
+  const url = ConfigData.bugzilla_search_url;
 
-  //
-  // Open bugs filed by update bot -
-  let query = "resolution=---&f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other";
-  query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
+  // Open bugs filed by update bot.
+  const openParams = baseParams();
+  openParams.append("resolution", "---");
+  retrieveInfoFor(`${url}${openParams}`, 'open');
 
-  retrieveInfoFor(url + query, 'open');
-
-  // 'Fixed' bugs filed by update bot.
-  query = "resolution=FIXED&";
+  // Closed bugs filed by update bot.
+  const closedParams = baseParams();
+  closedParams.append("resolution", "FIXED");
   if (ConfigData.incdupes) {
     // Add duplicates if settings dictates displaying them.
-    query += "resolution=DUPLICATE&";
+    closedParams.append("resolution", "DUPLICATE");
   }
-
-  query += "&f1=reporter&chfield=cf_last_resolved&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&o1=equals";
-  query += "&include_fields=id,summary,assigned_to,creation_time,resolution";
-  retrieveInfoFor(url + query, 'closed');
+  closedParams.append("chfield", "cf_last_resolved");
+  retrieveInfoFor(`${url}${closedParams}`, 'closed');
 }
 
 let lastErrorText = "";
