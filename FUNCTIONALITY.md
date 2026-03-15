@@ -19,6 +19,8 @@ Two separate queries are made:
 
 A `config.json` file controls the Bugzilla domain, URL templates, and library-to-category mappings. It also supports pointing queries at the Bugzilla test instance (`bugzilla-dev.allizom.org`) via the `use_test_domain` flag.
 
+Query URLs are built using `URLSearchParams`, with shared parameters (reporter, classifications, included fields) defined once and reused across both queries.
+
 ---
 
 ## Bug Parsing
