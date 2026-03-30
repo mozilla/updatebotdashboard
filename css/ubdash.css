@@ -14,9 +14,12 @@ body {
   margin-bottom: 14px;
   height:7vh;
   color: white;
-  text-align: center;
-  font-size:  4.5vmin;
+  text-align: left;
+  padding-left: 1vw;
+  font-size:  2vmin;
   border: 0;
+  display: flex;
+  align-items: center;
 }
 
 .header-bg {
@@ -29,16 +32,16 @@ body {
 
 .header div {
   display: inline-block;
-  height: 100%;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 #title-img {
-  height: 100%;
+  height: 80%;
+  margin-right: 12px;
 }
 
 .title {
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .title-details {
@@ -370,10 +373,12 @@ a:hover {
 
 /* Form controls on pages */
 .command-button-container {
-  padding-left: 2vmin;
-  padding-right: 2vmin;
-  width: 100%;
-  border: 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .command-button:disabled {
@@ -382,34 +387,37 @@ a:hover {
 
 .stats {
   padding-top: 3px;
-  float: left;
   font-size: 1.75vmin;
 }
 
 .command-button {
-  padding: 5px;
-  margin-left: 10px;
-  float: right;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.command-button:hover:not(:disabled) {
+  background-color: #f0f0f0;
 }
 
 .command-button-hidden {
-  padding: 5px;
-  margin-left: 10px;
-  float: right;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
   visibility: hidden;
 }
 
 .button-separator {
-  display: inline-block;
-  float: right;
-  padding: 10px;
+  display: none;
 }
 
 .settings-button-container {
   padding: 0;
   margin: 0;
   border: 0;
-  float: right;
+  position: relative;
+  display: inline-block;
 }
 
 .alert-icon {
