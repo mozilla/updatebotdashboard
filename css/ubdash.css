@@ -12,7 +12,7 @@ body {
 
 .header {
   margin-bottom: 14px;
-  height:7vh;
+  height: 8vh;
   color: white;
   text-align: left;
   padding-left: 1vw;
@@ -135,6 +135,7 @@ a:hover {
 .dialog-close-btn {
   background: none;
   border: none;
+  font-family: inherit;
   font-size: 1rem;
   line-height: 1;
   padding: 2px 6px;
@@ -378,6 +379,7 @@ a:hover {
   padding: 8px 20px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
 
@@ -394,6 +396,8 @@ a:hover {
   padding: 5px 12px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
@@ -423,14 +427,15 @@ a:hover {
 .alert-icon {
   position: absolute;
   visibility: hidden;
-  margin-left: 65px;
-  margin-top: -2px;
+  top: -3px;
+  right: -3px;
   width: 10px;
   height: 10px;
 }
 
 .expand-collapse-btn {
-  font-size: 1.3vmin;
+  font-family: inherit;
+  font-size: 0.8rem;
   padding: 4px 16px;
   cursor: pointer;
   border: 1px solid #ccc;

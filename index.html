@@ -18,12 +18,11 @@
   </div>
 
   <div class="command-button-container">
+    <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <div class="settings-button-container">
       <button class="command-button" onclick="openSettings()">Settings</button>
       <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" alt="">
     </div>
-    <div class="button-separator"></div>
-    <button class="command-button" onclick="refreshList(event);">Refresh</button>
   </div>
 
   <div class="block-title"><a href="https://bugzilla.mozilla.org/buglist.cgi?f1=reporter&o1=equals&v1=update-bot%40bmo.tld&classification=Client%20Software&classification=Developer%20Infrastructure&classification=Components&classification=Server%20Software&classification=Other&resolution=---&query_format=advanced" target="_blank">Open Updates</a></div>
@@ -53,7 +52,7 @@
     <form method="dialog">
       <div class="dialog-header">
         <h2 class="dialog-title">Settings</h2>
-        <button type="submit" value="cancel" class="dialog-close-btn btn-cancel" aria-label="Close">&#x2715;</button>
+        <button type="submit" value="cancel" class="dialog-close-btn" aria-label="Close">&#x2715;</button>
       </div>
       <div class="dialog-body">
         <div class="settings-container">
