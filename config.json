@@ -8,15 +8,17 @@
     "bugzilla_test_domain": "bugzilla-dev.allizom.org",
     "use_test_domain": false,
     "categories": {
-      "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng" ],
-      "Media": [ "opus", "libvpx", "libyuv", "dav1d", "chromium-cdm" ],
+      "Android": ["android nightly application-services version bump" ],
       "Graphics": [ "webgpu", "wgpu", "angle", "WebGPU CTS", "highway" ],
+      "Image": [ "jpeg-xl", "libjxl", "libwebp", "libpng", "libjpeg-turbo" ],
+      "Javascript": [ "irregexp" ],
       "Layout": [ "harfbuzz" ],
+      "Media": [ "opus", "libvpx", "dav1d", "chromium-cdm" ],
       "MFBT": [ "function2" ],
       "PDF.js": [ "PDF.js" ],
-      "Javascript": [ "irregexp" ],
-      "Android": ["android nightly application-services version bump"],
-      "WebRTC": [ "libepoxy", "libsrtp", "libdrm", "libgbm" ],
+      "Security": [ "rlbox", "NSS" ],
+      "Testing": [ "googletest" ],
+      "WebRTC": [ "libepoxy", "libsrtp", "libdrm", "libgbm", "sctp", "libyuv" ],
       "Misc": []
     }
   }
