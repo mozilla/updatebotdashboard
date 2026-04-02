@@ -355,8 +355,8 @@ function settingsUpdated() {
 function checkConfig() {
   // Throw up a little red ! if we don't have a bugzilla api key configued.
   if (!ConfigData.api_key || ConfigData.api_key.length == 0) {
-    document.getElementById('alert-icon').style.visibility = 'visible';
+    document.getElementById('settings-button-container').classList.add('alert');
   } else {
-    document.getElementById('alert-icon').style.visibility = 'hidden';
+    document.getElementById('settings-button-container').classList.remove('alert');
   }
 }

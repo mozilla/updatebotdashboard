@@ -4,14 +4,13 @@
 }
 
 body {
-  margin-top: 0;
-  margin-left: 0;
-  margin-right: 0;
-  font-family: Moz, Arial, sans-serif;
+  margin: 0;
+  font-family: Moz;
+  background-color: #f7f8fa;
 }
 
 .header {
-  margin-bottom: 14px;
+  margin-bottom: 0;
   height: 8vh;
   color: white;
   text-align: left;
@@ -80,6 +79,7 @@ a:hover {
   border-radius: 4px;
   font-family: inherit;
   font-size: 0.875rem;
+  font-weight: normal;
   cursor: pointer;
   width: auto;
 }
@@ -396,8 +396,8 @@ a:hover {
   padding: 5px 12px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  font-family: inherit;
   font-size: 0.875rem;
+  font-weight: normal;
   cursor: pointer;
 }
 
@@ -424,13 +424,15 @@ a:hover {
   display: inline-block;
 }
 
-.alert-icon {
+.settings-button-container.alert::after {
+  content: '';
   position: absolute;
-  visibility: hidden;
-  top: -3px;
-  right: -3px;
-  width: 10px;
-  height: 10px;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: red;
+  border-radius: 50%;
 }
 
 .expand-collapse-btn {
