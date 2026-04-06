@@ -383,6 +383,10 @@ a:hover {
   gap: 8px;
 }
 
+.refresh-button {
+  margin-right: auto;
+}
+
 .command-button:disabled {
   cursor: default;
 }
