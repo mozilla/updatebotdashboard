@@ -26,7 +26,8 @@ body {
   z-index: -1;
   margin: 0;
   height: 8vh;
-  border-right: 100vw solid #0087ff;
+  width: 100vw;
+  background: linear-gradient(180deg, #0060df 0%, #0087ff 100%);
 }
 
 .header div {

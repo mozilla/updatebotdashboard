@@ -28,6 +28,7 @@ let ClosedBugList = [];
 let ConfigData = {};
 
 document.addEventListener('DOMContentLoaded', loadConfig);
+setInterval(() => refreshList(null), 60 * 60 * 1000);
 
 function loadConfig() {
   fetch("config.json")
